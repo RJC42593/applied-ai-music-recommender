@@ -1,24 +1,26 @@
 flowchart TD
-    A[User enters music preferences] --> B[main.py]
+    A[User enters genre, mood, and energy] --> B[Input Validator]
 
-    B --> C[Load songs.csv]
+    B -->|Invalid input| C[Display helpful error message]
+    B -->|Valid input| D[Load songs.csv]
 
-    C --> D[Create UserProfile]
+    D --> E[Score each song]
+    E --> F[Genre match]
+    E --> G[Mood match]
+    E --> H[Energy similarity]
 
-    D --> E[score_song()]
-    C --> E
+    F --> I[Calculate total score]
+    G --> I
+    H --> I
 
-    E --> F[Calculate score]
-    F --> G[Genre match]
-    F --> H[Mood match]
-    F --> I[Energy similarity]
+    I --> J[Calculate confidence level]
+    J --> K[Rank songs from highest to lowest]
+    K --> L[Return Top K recommendations]
 
-    G --> J[recommend_songs()]
-    H --> J
-    I --> J
+    L --> M[Display title, score, confidence, and reasons]
 
-    J --> K[Sort songs by score]
+    N[Automated evaluation script] --> B
+    N --> O[Check expected behavior]
+    O --> P[Print pass or fail summary]
 
-    K --> L[Top recommendations]
-
-    L --> M[Display song titles, scores, and explanations]
+    Q[Human review] --> M
