@@ -180,6 +180,28 @@ Because: energy similarity (+0.94)
 
 ---
 
+## Evaluation Results
+
+```
+Loaded songs: 20
+PASS: High-Energy Pop
+Expected genre: pop
+Top recommendation genre: pop
+Confidence: 98.0%
+
+PASS: Chill Lofi
+Expected genre: lofi
+Top recommendation genre: lofi
+Confidence: 99.0%
+
+PASS: Deep Intense Rock
+Expected genre: rock
+Top recommendation genre: rock
+Confidence: 100.0%
+
+Evaluation summary: 3/3 passed
+```
+
 ## Experiments You Tried
 
 During testing, I increased the weight of the energy feature and reduced the weight of the genre feature. After rerunning the recommender, songs with energy levels closer to the user's preference ranked higher, even if they were from a different genre. This demonstrated that changing feature weights has a noticeable impact on the final recommendations and confirmed that the scoring system responds as expected.

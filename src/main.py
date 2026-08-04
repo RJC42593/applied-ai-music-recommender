@@ -9,7 +9,11 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
-from recommender import load_songs, recommend_songs
+from recommender import (
+    load_songs,
+    recommend_songs,
+    validate_user_preferences,
+)
 
 
 def main() -> None:
@@ -25,7 +29,7 @@ def main() -> None:
         {
             "name": "Chill Lofi",
             "genre": "lofi",
-            "mood": "calm",
+            "mood": "chill",
             "energy": 0.3
         },
         {
@@ -39,12 +43,32 @@ def main() -> None:
     for user_prefs in profiles:
         print(f"\n=== {user_prefs['name']} ===\n")
 
-        recommendations = recommend_songs(user_prefs, songs, k=5)
+        is_valid, errors = validate_user_preferences(
+            user_prefs,
+            songs
+        )
 
-        for song, score, explanation in recommendations:
-            print(f"{song['title']} - Score: {score:.2f}")
+        if not is_valid:
+            print("Unable to generate recommendations.")
+            for error in errors:
+                print(f"- {error}")
+            continue
+
+        recommendations = recommend_songs(
+            user_prefs,
+            songs,
+            k=5
+        )
+
+        print("=== Top Recommendations ===")
+
+        for index, (song, score, explanation) in enumerate(
+            recommendations,
+            start=1
+        ):
+            print(f"\n{index}. {song['title']}")
+            print(f"Score: {score:.2f}")
             print(f"Because: {explanation}")
-            print()
 
 
 if __name__ == "__main__":

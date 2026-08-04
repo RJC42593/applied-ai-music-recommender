@@ -73,6 +73,64 @@ def load_songs(csv_path: str) -> List[Dict]:
     return songs
 
 
+def validate_user_preferences(
+    user_prefs: Dict,
+    songs: List[Dict]
+) -> Tuple[bool, List[str]]:
+    """Validate user preferences before generating recommendations."""
+    errors = []
+
+    required_fields = ["genre", "mood", "energy"]
+
+    for field in required_fields:
+        if field not in user_prefs:
+            errors.append(f"Missing required preference: {field}")
+
+    if errors:
+        return False, errors
+
+    genre = str(user_prefs["genre"]).strip().lower()
+    mood = str(user_prefs["mood"]).strip().lower()
+
+    if not genre:
+        errors.append("Genre cannot be blank.")
+
+    if not mood:
+        errors.append("Mood cannot be blank.")
+
+    try:
+        energy = float(user_prefs["energy"])
+    except (TypeError, ValueError):
+        errors.append("Energy must be a number between 0.0 and 1.0.")
+        return False, errors
+
+    if not 0.0 <= energy <= 1.0:
+        errors.append("Energy must be between 0.0 and 1.0.")
+
+    available_genres = {
+        str(song["genre"]).strip().lower()
+        for song in songs
+    }
+    available_moods = {
+        str(song["mood"]).strip().lower()
+        for song in songs
+    }
+
+    if genre and genre not in available_genres:
+        errors.append(
+            f"Unknown genre '{user_prefs['genre']}'. "
+            f"Available genres: {', '.join(sorted(available_genres))}"
+        )
+
+    if mood and mood not in available_moods:
+        errors.append(
+            f"Unknown mood '{user_prefs['mood']}'. "
+            f"Available moods: {', '.join(sorted(available_moods))}"
+        )
+
+    return len(errors) == 0, errors
+
+
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
     Calculate a recommendation score and explain the result.
@@ -97,6 +155,24 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     return score, reasons
 
 
+def calculate_confidence(score: float,
+                         max_score: float = 4.0) -> Tuple[float, str]:
+    """Convert a recommendation score into a confidence percentage."""
+
+    percentage = round(
+        max(0.0, min(score / max_score, 1.0)) * 100
+    )
+
+    if percentage >= 80:
+        label = "High"
+    elif percentage >= 50:
+        label = "Medium"
+    else:
+        label = "Low"
+
+    return percentage, label
+
+
 def recommend_songs(
     user_prefs: Dict,
     songs: List[Dict],
@@ -110,10 +186,18 @@ def recommend_songs(
     for song in songs:
         score, reasons = score_song(user_prefs, song)
 
-        explanation = ", ".join(reasons)
+        confidence, label = calculate_confidence(score)
+
+        explanation = (
+            f"{', '.join(reasons)} | "
+            f"Confidence: {confidence:.0f}% ({label})"
+        )
 
         recommendations.append((song, score, explanation))
 
-    recommendations.sort(key=lambda item: item[1], reverse=True)
+    recommendations.sort(
+        key=lambda item: item[1],
+        reverse=True
+    )
 
     return recommendations[:k]
