@@ -3,7 +3,7 @@
 ## 1. Model Name  
 
 Give your model a short, descriptive name.  
-Example: **TuneMatch 1.0**  
+Example: **TuneMatch 2.0**  
 
 ---
 
@@ -61,4 +61,20 @@ Comparing Chill Lofi and Deep Intense Rock, the recommendations were almost comp
 
 ## 9. Personal Reflection
 
-I learned that even a simple scoring system can produce useful recommendations and that changing feature weights can significantly affect the results. Using AI helped me write and improve the code more quickly, but I still needed to review the logic, test the program, and fix errors to make sure everything worked correctly. I was surprised that a basic algorithm using only genre, mood, and energy could produce recommendations that felt reasonable. If I continued this project, I would add more songs and include features like tempo, danceability, and acousticness to create more accurate and diverse recommendations.
+### Limitations and Bias
+
+This recommender relies on a small dataset of only 20 songs and uses fixed scoring weights. Because genre has the highest weight, the system may favor songs from a user's preferred genre even when songs from other genres have similar moods or energy levels. The recommender also ignores other available features such as tempo, danceability, valence, and acousticness, which limits how personalized the recommendations can be.
+
+### Potential Misuse
+
+This system could be misused if users assume the recommendations are objective or universally "best." In reality, the results depend entirely on the scoring weights and available data. To reduce misuse, the application explains why each song was recommended, displays a confidence score, and validates user input before generating recommendations.
+
+### Reliability Reflection
+
+One thing that surprised me during testing was how much changing the scoring weights affected the rankings. Even small adjustments caused different songs to appear near the top, showing how important it is to carefully choose and evaluate scoring rules.
+
+### Collaboration with AI
+
+I used AI as a programming assistant throughout this project. It was especially helpful when suggesting how to add confidence scoring and clear explanations for each recommendation, which made the output easier to understand.
+
+One AI suggestion was incorrect because it recommended code changes that introduced indentation and formatting problems. I reviewed the code myself, tested the application, and corrected those issues before continuing. This reinforced that AI is a useful assistant, but its suggestions should always be verified through testing and debugging.
